@@ -10,18 +10,22 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late TextEditingController _urlController;
+  late TextEditingController _yandexTokenController;
+  late TextEditingController _userNameController;
 
   @override
   void initState() {
     super.initState();
     final viewModel = Provider.of<AppViewModel>(context, listen: false);
-    _urlController = TextEditingController(text: viewModel.uploadUrl);
+
+    _yandexTokenController = TextEditingController(text: viewModel.yandexToken);
+    _userNameController = TextEditingController(text: viewModel.userName);
   }
 
   @override
   void dispose() {
-    _urlController.dispose();
+    _yandexTokenController.dispose();
+    _userNameController.dispose();
     super.dispose();
   }
 
@@ -35,26 +39,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Отправить на диск', style: TextStyle(fontSize: 16)),
+              const Text(
+                'Ваше имя (для имени файла отчета)',
+                style: TextStyle(fontSize: 16),
+              ),
               const SizedBox(height: 8),
               TextField(
-                controller: _urlController,
+                controller: _userNameController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'https://yadi.sk/d/...',
+                  hintText: 'Иван Иванов',
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 16),
+              const Text('Токен Яндекс.Диска', style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _yandexTokenController,
+                obscureText: true, // Скрываем токен для безопасности
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'OAuth токен',
+                ),
+              ),
+              const Spacer(), // Занимает все свободное место, прижимая кнопку к низу
               ElevatedButton(
                 onPressed: () {
-                  final viewModel = Provider.of<AppViewModel>(
-                    context,
-                    listen: false,
+                  final viewModel = Provider.of<AppViewModel>(context, listen: false);
+
+                  viewModel.saveSettings(
+                    _yandexTokenController.text.trim(),
+                    _userNameController.text.trim(),
                   );
-                  viewModel.saveSettings(_urlController.text);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Настройки сохранены')),
+                  );
+
                   Navigator.pop(context);
                 },
-                child: const Text('Сохранить'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text('Сохранить', style: TextStyle(fontSize: 16)),
               ),
             ],
           ),

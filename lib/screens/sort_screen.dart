@@ -11,17 +11,28 @@ class SortScreen extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('Разборка: ${viewModel.currentBox.name}')),
+        appBar: AppBar(title: Text('Разборка')), // ${viewModel.currentBox.name}'
         body: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: const InputDecoration(
+                    hintText: 'Поиск по артикулу',
+                    prefixIcon: Icon(Icons.search),
+                ),
+                onChanged: (value) {
+                  viewModel.searchArticles(value);
+                },
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(8.0),
                 itemCount: viewModel.groupedArticles.length,
                 itemBuilder: (context, index) {
                   final article = viewModel.groupedArticles[index];
-                  final currentCount =
-                      viewModel.currentBox.items[article.article] ?? 0;
+                  final currentCount = viewModel.currentBox.items[article.article] ?? 0;
 
                   return Card(
                     color: const Color(0xFF2C2C2E),
@@ -62,8 +73,6 @@ class SortScreen extends StatelessWidget {
                               IconButton(
                                 icon: const Icon(Icons.add),
                                 onPressed: () {
-                                  // Опционально: добавить проверку на максимальное количество
-                                  // if (currentCount < article.totalQuantity)
                                   viewModel.updateItemCountInCurrentBox(
                                     article.article,
                                     currentCount + 1,
@@ -85,7 +94,10 @@ class SortScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/summary');
                 },
-                child: const Text('Сформировать отчет'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                  child: const Text('Сформировать отчет'),
+                ),
               ),
             ),
           ],

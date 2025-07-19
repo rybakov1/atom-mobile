@@ -33,10 +33,24 @@ class UploadScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ElevatedButton.icon(
+                    icon: const Icon(Icons.cloud_download),
+                    label: const Text('Скачать с Яндекс.Диска'),
+                    onPressed: () async {
+                      await viewModel.downloadAndLoadLatestSpecification();
+                      if (viewModel.errorMessage.isNotEmpty &&
+                          context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(viewModel.errorMessage)),
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
                     icon: const Icon(Icons.folder_open),
                     label: const Text('Выбрать файл'),
                     onPressed: () async {
-                      await viewModel.loadExcelFile();
+                      await viewModel.loadLocalExcelFile();
                       if (viewModel.errorMessage.isNotEmpty &&
                           context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(

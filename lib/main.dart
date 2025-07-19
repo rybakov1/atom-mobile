@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
       create: (context) => AppViewModel(),
       child: MaterialApp(
         title: 'Сборочный Лист',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: const Color(0xFF1C1C1E),
           appBarTheme: const AppBarTheme(
